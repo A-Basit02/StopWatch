@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stylish Stopwatch</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Cairo');
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #0F2027; /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #2C5364, #203A43, #0F2027); /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #2C5364, #203A43, #0F2027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 10px; /* Space between the title and stopwatch */
+            font-family: 'Cairo', sans-serif;
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            background-image: url('https://media.giphy.com/media/26BROrSHlmyzzHf3i/giphy.gif');
+            background-size: cover;
+            color: transparent;
+            -moz-background-clip: text;
+            -webkit-background-clip: text;
+            text-transform: uppercase;
+            font-size: 50px;
+            margin: 0;
+        }
+
+        .stopwatch {
+            width: 90%;
+            max-width: 400px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.4); /* Translucent white */
+            backdrop-filter: blur(20px); /* Frosted glass effect */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25), 0 6px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            color: #333333;
+            text-align: center;
+        }
+
+        .time-display {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .buttons button {
+            font-size: 18px;
+            padding: 10px 20px;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .buttons button:hover {
+            background-color: #d0d0d0;
+            transform: scale(1.05);
+        }
+
+        .buttons button.start {
+            background: #4caf50;
+            color: #ffffff;
+        }
+
+        .buttons button.start:hover {
+            background: #45a049;
+        }
+
+        .buttons button.reset {
+            background: #f44336;
+            color: #ffffff;
+        }
+
+        .buttons button.reset:hover {
+            background: #e53935;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <h1>STOPWATCH</h1>
+    </div>
+    <div class="stopwatch">
+        <div class="time-display" id="time-display">00:00:00.00</div>
+        <div class="buttons">
+            <button class="start" id="start-stop-btn">Start</button>
+            <button class="reset" id="reset-btn">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        let timerInterval;
+        let elapsedTime = 0;
+        let isRunning = false;
+
+        const timeDisplay = document.getElementById('time-display');
+        const startStopBtn = document.getElementById('start-stop-btn');
+        const resetBtn = document.getElementById('reset-btn');
+
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+            const seconds = String(totalSeconds % 60).padStart(2, '0');
+            const milliseconds = String(ms % 1000).padStart(3, '0').substring(0, 2); // Show two digits for milliseconds
+            return `${minutes}:${seconds}.${milliseconds}`;
+        }
+
+        function updateDisplay() {
+            timeDisplay.textContent = formatTime(elapsedTime);
+        }
+
+        function startStopTimer() {
+            if (isRunning) {
+                clearInterval(timerInterval);
+                startStopBtn.textContent = 'Start';
+            } else {
+                const startTime = Date.now() - elapsedTime;
+                timerInterval = setInterval(() => {
+                    elapsedTime = Date.now() - startTime;
+                    updateDisplay();
+                }, 10);
+                startStopBtn.textContent = 'Stop';
+            }
+            isRunning = !isRunning;
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            elapsedTime = 0;
+            isRunning = false;
+            updateDisplay();
+            startStopBtn.textContent = 'Start';
+        }
+
+        startStopBtn.addEventListener('click', startStopTimer);
+        resetBtn.addEventListener('click', resetTimer);
+
+        updateDisplay();
+    </script>
+</body>
+</html>
